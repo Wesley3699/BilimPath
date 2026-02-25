@@ -27,15 +27,15 @@ class AnswerType(str, enum.Enum):
     photo = "photo"
     document = "document"
 
-class College(Base):
-    __tablename__ = "colleges"
+class Institution(Base):
+    __tablename__ = "institutions"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     name = Column(String(255), nullable=False)
     short_code = Column(String(50), unique=True, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
 
-    users = relationship("User", back_populates="college")
-    groups = relationship("Group", back_populates="college")
+    users = relationship("User", back_populates="institution")
+    groups = relationship("Group", back_populates="institution")
 
 class User(Base):
     __tablename__ = "users"
@@ -44,10 +44,10 @@ class User(Base):
     password_hash = Column(Text, nullable=False)
     role = Column(Enum(UserRole), nullable=False, default=UserRole.student)
     full_name = Column(String(255), nullable=False)
-    college_id = Column(UUID(as_uuid=True), ForeignKey("colleges.id"), nullable=False)
+    institution_id = Column(UUID(as_uuid=True), ForeignKey("institutions.id"), nullable=False)
     created_at = Column(DateTime, server_default=func.now())
 
-    college = relationship("College", back_populates="users")
+    institution = relationship("Institution", back_populates="users")
     student_profile = relationship("StudentProfile", back_populates="user", uselist=False)
     teacher_profile = relationship("TeacherProfile", back_populates="user", uselist=False)
     groups_owned = relationship("Group", back_populates="teacher")
@@ -79,10 +79,10 @@ class Group(Base):
     id          = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     name        = Column(String(100), nullable=False)
     teacher_id  = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
-    college_id  = Column(UUID(as_uuid=True), ForeignKey("colleges.id"), nullable=True)
+    institution_id  = Column(UUID(as_uuid=True), ForeignKey("institutions.id"), nullable=True)
     invite_code = Column(String(10), unique=True, nullable=False)
 
-    college  = relationship("College", back_populates="groups")
+    institution  = relationship("Institution", back_populates="groups")
     teacher  = relationship("User", back_populates="groups_owned")
     students = relationship("StudentProfile", back_populates="group")
     members  = relationship("GroupMember", back_populates="group")
