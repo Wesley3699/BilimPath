@@ -1,0 +1,39 @@
+# --- Python & Bytecode ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+
+# --- Environments (Виртуальные окружения) ---
+.venv/
+venv/
+ENV/
+env/
+# Зависимости лучше держать в requirements.txt или pyproject.toml
+# а не в гите
+
+# --- Configuration & Secrets (Критически важно!) ---
+.env
+.flaskenv
+*.local
+secrets.json
+
+# --- Database (Для SQLAlchemy проектов) ---
+*.db
+*.sqlite
+*.sqlite3
+# Если используешь миграции Alembic, папку versions/ игнорировать НЕЛЬЗЯ
+
+# --- IDEs & Editors ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Logs & OS ---
+*.log
+.DS_Store
+Thumbs.db
+
+alembic.ini
