@@ -1,17 +1,33 @@
-// src/app/(auth)/role/page.js
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./role.module.scss";
 import Image from "next/image";
 import Icon from "@/shared/icons/Icon";
 
 export default function RolePage() {
+  const [selectedRole, setSelectedRole] = useState(null);
+  const router = useRouter();
+
+  const handleContinue = () => {
+    if (!selectedRole) return;
+
+    if (selectedRole === "student") {
+      router.push("/login?role=student");
+    } else {
+      router.push("/login?role=teacher");
+    }
+  };
+
   return (
     <div className={styles.inner}>
+      {/* Logo Block */}
       <div className={styles.bilimPath}>
         <div className={styles.logo}>
           <Image
             src="/imgs/logo.png"
             alt="BilimPath Logo"
-            className={styles.logoImg}
             width={50}
             height={53}
             priority
@@ -29,15 +45,15 @@ export default function RolePage() {
 
         <div className={styles.roles}>
           <button
-            className={`${styles.roleItem} border-gradient`}
             type="button"
+            onClick={() => setSelectedRole("student")}
+            className={`${styles.roleItem} border-gradient ${
+              selectedRole === "student" ? styles.active : ""
+            }`}
           >
-            <div
-              className="border-gradient-circle"
-              style={{ width: 72, height: 72 }}
-            >
+            <div className={`${styles.iconCircle} border-gradient-circle`}>
               <div className={styles.roleIconInner}>
-                <Icon name="cap" size={36} />
+                <Icon name="cap" size={34} />
               </div>
             </div>
 
@@ -48,15 +64,15 @@ export default function RolePage() {
           </button>
 
           <button
-            className={`${styles.roleItem} border-gradient`}
             type="button"
+            onClick={() => setSelectedRole("teacher")}
+            className={`${styles.roleItem} border-gradient ${
+              selectedRole === "teacher" ? styles.active : ""
+            }`}
           >
-            <div
-              className="border-gradient-circle"
-              style={{ width: 72, height: 72 }}
-            >
-              <div className={`${styles.roleIconInner} ${styles.iconGradient}`}>
-                <Icon name="teacher" size={36} />
+            <div className={`${styles.iconCircle} border-gradient-circle`}>
+              <div className={styles.roleIconInner}>
+                <Icon name="teacher" size={34} />
               </div>
             </div>
 
@@ -67,7 +83,11 @@ export default function RolePage() {
           </button>
         </div>
 
-        <button className="btn" type="button">
+        <button
+          className={styles.continueBtn}
+          disabled={!selectedRole}
+          onClick={handleContinue}
+        >
           Войти
         </button>
       </div>

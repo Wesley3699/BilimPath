@@ -4,10 +4,8 @@ export default function TeacherIcon(props) {
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#ffffff"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      stroke="currentColor"
+      strokeWidth="1.5"
       {...props}
     >
       <path d="M14 21v-3a2 2 0 0 0-4 0v3" />

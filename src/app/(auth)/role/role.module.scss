@@ -1,23 +1,26 @@
 .inner {
   width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  justify-content: center;
+  gap: 32px;
+  padding: 24px;
 }
 
 .bilimPath {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-align: center;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .logoTxt {
@@ -26,7 +29,7 @@
 }
 
 .description {
-  color: var(--c-text-muted);
+  color: var(--c-text-second);
 }
 
 .card {
@@ -38,14 +41,14 @@
   backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 32px;
 }
 
 .title {
-  margin: 0;
   text-align: center;
-  font-size: 26px;
+  font-size: var(--fs-h3);
   font-weight: 600;
+  line-height: 1.2;
 }
 
 .roles {
@@ -76,23 +79,68 @@
   box-shadow: var(--glow-pink);
 }
 
+/* Active state */
+.active {
+  background: rgba(112, 40, 255, 0.08);
+  box-shadow: 0 0 25px rgba(112, 40, 255, 0.35);
+}
+
+/* Icon Circle */
+.iconCircle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .roleIconInner {
   width: 100%;
   height: 100%;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.05);
   color: #9f7cff;
 }
+
+/* Text */
 .roleText {
-  text-align: start;
+  text-align: left;
 }
+
 .roleText h2 {
   font-size: var(--fs-lg);
   font-weight: 600;
+  margin-bottom: 6px;
 }
 
 .roleText p {
-  color: var(--c-text-muted);
+  color: var(--c-text-second);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Continue Button */
+.continueBtn {
+  margin-top: 10px;
+  background: var(--g-violet-btn);
+  color: var(--c-text);
+  font-size: var(--fs-lg);
+  border-radius: 14px;
+  border: none;
+  padding: 18px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.continueBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--glow-pink);
+}
+
+.continueBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
