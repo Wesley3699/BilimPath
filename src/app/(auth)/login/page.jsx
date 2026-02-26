@@ -27,9 +27,12 @@ export default function LoginPage() {
             <div className={styles.inputs}>
               <div className={styles.inputWrapper}>
                 <Icon name="user" size={30} className={styles.inputIcon} />
-                <input className={styles.input} placeholder="Ваша почта" />
+                <input className={styles.input} placeholder="Введите почту" />
               </div>
-              <input className={styles.input} placeholder="Пароль" />
+              <div className={styles.inputWrapper}>
+                <Icon name="lock" size={30} className={styles.inputIcon} />
+                <input className={styles.input} placeholder="Введите пароль" />
+              </div>
             </div>
             <div className={styles.buttons}>
               <p className={styles.forgotPass}>Забыли пароль?</p>
