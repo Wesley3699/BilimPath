@@ -1,0 +1,128 @@
+.inner {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 24px;
+}
+
+.bilimPath {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: var(--fs-h3);
+}
+
+.logoTxt {
+  font-size: var(--fs-h3);
+  font-weight: 600;
+}
+
+.description {
+  color: var(--c-text-second);
+}
+
+.card {
+  width: 100%;
+  max-width: 560px;
+  padding: 48px 40px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.title {
+  text-align: center;
+  font-size: var(--fs-h3);
+  font-weight: 600;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.inputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--c-text-second);
+  pointer-events: none;
+}
+
+.input {
+  height: 56px;
+  width: 100%;
+  padding: 0 20px 0 52px;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  color: var(--c-text);
+  font-size: var(--fs-body);
+  outline: none;
+  transition: 0.2s ease;
+}
+
+.input::placeholder {
+  color: var(--c-text-second);
+}
+
+.input:focus {
+  border-color: #9074fe;
+  box-shadow: var(--glow-pink);
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.outlineBtn {
+  background: none;
+  color: var(--c-text);
+  border-radius: 14px;
+  padding: 18px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.outlineBtn:hover {
+  box-shadow: var(--glow-pink);
+}
+
+.error {
+  color: #ff4d4f;
+  font-size: 14px;
+  text-align: center;
+}
