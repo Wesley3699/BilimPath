@@ -2,31 +2,35 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import styles from "./exam.module.scss";
+import styles from "./topics.module.scss";
+import Icon from "@/shared/icons/Icon";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
-export default function SubjectTasksPage() {
+function masteryColorClass(v, styles) {
+  const val = Number(v || 0);
+  if (val >= 70) return styles.masteryGreen;
+  if (val >= 40) return styles.masteryOrange;
+  return styles.masteryRed;
+}
+
+export default function TopicsPage() {
   const { subjectId } = useParams();
   const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
-  const [stage, setStage] = useState("start"); // start | exam | result
-
-  const [difficulty, setDifficulty] = useState("medium"); // easy|medium|hard
-
-  const [subjectName, setSubjectName] = useState("");
-  const [exam, setExam] = useState(null); // ExamResponse
-  const [answers, setAnswers] = useState({}); // { [questionId]: selectedIndex }
-  const [result, setResult] = useState(null); // ExamResult
-
+  const [loading, setLoading] = useState(true);
+  const [subject, setSubject] = useState(null);
+  const [query, setQuery] = useState("");
+  const [sortDir, setSortDir] = useState("desc"); // desc | asc
   const [error, setError] = useState("");
 
-  // Подтянем имя предмета из my-progress (чтобы красиво показать заголовок)
   useEffect(() => {
-    async function loadSubject() {
+    async function load() {
       try {
+        setLoading(true);
+        setError("");
+
         const token = localStorage.getItem("access_token");
         if (!token) {
           router.replace("/role");
@@ -37,294 +41,132 @@ export default function SubjectTasksPage() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (!res.ok) return;
+        if (!res.ok) {
+          throw new Error("Не удалось загрузить прогресс");
+        }
 
         const data = await res.json();
+
         const found = (Array.isArray(data) ? data : []).find(
-          (s) => String(s.subject_id) === String(subjectId),
+          (s) => String(s.id) === String(subjectId),
         );
-        if (found?.name) setSubjectName(found.name);
-      } catch (_) {}
+
+        if (!found) {
+          throw new Error("Предмет не найден");
+        }
+
+        setSubject(found);
+      } catch (e) {
+        setError(e?.message || "Ошибка");
+      } finally {
+        setLoading(false);
+      }
     }
 
-    loadSubject();
+    load();
   }, [router, subjectId]);
 
-  const questions = useMemo(() => exam?.questions || [], [exam]);
+  const topics = useMemo(() => {
+    const list = subject?.topics ? [...subject.topics] : [];
 
-  const canSubmit = useMemo(() => {
-    if (!exam) return false;
-    if (!questions.length) return false;
-    return questions.every((q) => answers[q.id] !== undefined);
-  }, [answers, exam, questions]);
+    // search
+    const q = query.trim().toLowerCase();
+    const filtered = q
+      ? list.filter((t) => (t.title || "").toLowerCase().includes(q))
+      : list;
 
-  async function generateExam() {
-    setError("");
-    try {
-      setLoading(true);
+    // sort by mastery
+    filtered.sort((a, b) => {
+      const av = Number(a.mastery_level || 0);
+      const bv = Number(b.mastery_level || 0);
+      return sortDir === "desc" ? bv - av : av - bv;
+    });
 
-      const token = localStorage.getItem("access_token");
-      if (!token) {
-        router.replace("/role");
-        return;
-      }
+    return filtered;
+  }, [query, sortDir, subject]);
 
-      // POST /exams/generate :contentReference[oaicite:0]{index=0}
-      const res = await fetch(`${API_BASE}/exams/generate`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          subject_id: Number(subjectId),
-          difficulty,
-          num_questions: 8,
-        }),
-      });
-
-      if (!res.ok) {
-        let detail = "Ошибка генерации теста";
-        try {
-          const d = await res.json();
-          if (d?.detail) detail = d.detail;
-        } catch (_) {}
-        throw new Error(detail);
-      }
-
-      const data = await res.json();
-      setExam(data);
-      setAnswers({});
-      setResult(null);
-      setStage("exam");
-    } catch (e) {
-      setError(e?.message || "Ошибка");
-    } finally {
-      setLoading(false);
-    }
+  function goExam(topicId) {
+    router.push(
+      `/tasks/${subjectId}/exam?topicId=${encodeURIComponent(topicId)}`,
+    );
   }
 
-  function setAnswer(questionId, optionIndex) {
-    setAnswers((prev) => ({ ...prev, [questionId]: optionIndex }));
+  function goAi(topicId) {
+    // если у тебя будет AI-страница — замени путь
+    router.push(`/ai?topicId=${encodeURIComponent(topicId)}`);
   }
 
-  async function submitExam() {
-    setError("");
-    try {
-      setLoading(true);
+  if (loading) {
+    return <div className={styles.page}>Загрузка...</div>;
+  }
 
-      const token = localStorage.getItem("access_token");
-      if (!token) {
-        router.replace("/role");
-        return;
-      }
-
-      // POST /exams/submit :contentReference[oaicite:1]{index=1}
-      const payload = {
-        exam_id: exam.id,
-        answers: questions.map((q) => ({
-          question_id: q.id,
-          selected_option: answers[q.id],
-        })),
-      };
-
-      const res = await fetch(`${API_BASE}/exams/submit`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        let detail = "Ошибка отправки";
-        try {
-          const d = await res.json();
-          if (d?.detail) detail = d.detail;
-        } catch (_) {}
-        throw new Error(detail);
-      }
-
-      const data = await res.json();
-      setResult(data);
-      setStage("result");
-    } catch (e) {
-      setError(e?.message || "Ошибка");
-    } finally {
-      setLoading(false);
-    }
+  if (error) {
+    return <div className={styles.page}>{error}</div>;
   }
 
   return (
     <div className={styles.page}>
-      <div className={styles.topRow}>
-        <button
-          className={styles.back}
-          type="button"
-          onClick={() => router.push("/tasks")}
-        >
-          ← Назад
-        </button>
+      <h1 className={styles.title}>Список тем</h1>
 
-        <div className={styles.heading}>
-          <h1 className={styles.title}>
-            {subjectName ? subjectName : `Предмет #${subjectId}`}
-          </h1>
-          <p className={styles.sub}>
-            {stage === "start"
-              ? "Запусти адаптивный тест по предмету"
-              : stage === "exam"
-                ? "Ответь на все вопросы и отправь результаты"
-                : "Готово! Смотри результат и ошибки"}
-          </p>
+      <div className={styles.toolbar}>
+        <div className={`${styles.search} border-gradient`}>
+          <input
+            className={styles.searchInput}
+            placeholder="Поиск"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <div className={styles.searchIcon}>
+            <Icon name="search" size={22} />
+          </div>
         </div>
+
+        <button
+          type="button"
+          className={`${styles.sortBtn} border-gradient`}
+          onClick={() => setSortDir((p) => (p === "desc" ? "asc" : "desc"))}
+          title="Сортировка"
+        >
+          <span className={styles.sortArrow}>
+            {sortDir === "desc" ? "↓" : "↑"}
+          </span>
+        </button>
       </div>
 
-      {error && <div className={styles.error}>{error}</div>}
+      <div className={styles.list}>
+        {topics.map((t, idx) => (
+          <div key={t.id} className={`${styles.item} border-gradient`}>
+            <div className={styles.itemLeft}>
+              <div className={styles.itemTitle}>
+                {idx + 1}. {t.title}
+              </div>
 
-      {stage === "start" && (
-        <div className={`${styles.card} border-gradient`}>
-          <div className={styles.row}>
-            <div className={styles.block}>
-              <div className={styles.label}>Сложность</div>
-              <div className={styles.chips}>
-                {["easy", "medium", "hard"].map((d) => (
-                  <button
-                    key={d}
-                    type="button"
-                    className={`${styles.chip} ${difficulty === d ? styles.chipActive : ""}`}
-                    onClick={() => setDifficulty(d)}
-                  >
-                    {d === "easy"
-                      ? "Лёгкая"
-                      : d === "medium"
-                        ? "Средняя"
-                        : "Сложная"}
-                  </button>
-                ))}
+              <div className={styles.actions}>
+                <button
+                  className={styles.actionBtn}
+                  type="button"
+                  onClick={() => goAi(t.id)}
+                >
+                  Разобраться с ИИ
+                </button>
+                <button
+                  className={styles.actionBtn}
+                  type="button"
+                  onClick={() => goExam(t.id)}
+                >
+                  Решить задачи
+                </button>
               </div>
             </div>
 
-            <div className={styles.block}>
-              <div className={styles.label}>Вопросов</div>
-              <div className={styles.value}>8</div>
-            </div>
-          </div>
-
-          <button
-            className={styles.primaryBtn}
-            type="button"
-            onClick={generateExam}
-            disabled={loading}
-          >
-            {loading ? "Генерация..." : "Сгенерировать тест ▶"}
-          </button>
-        </div>
-      )}
-
-      {stage === "exam" && exam && (
-        <div className={styles.exam}>
-          {questions.map((q, idx) => (
-            <div key={q.id} className={`${styles.qCard} border-gradient`}>
-              <div className={styles.qTop}>
-                <div className={styles.qNum}>Вопрос {idx + 1}</div>
-                {q.topic_title && (
-                  <div className={styles.qTopic}>{q.topic_title}</div>
-                )}
-              </div>
-
-              <div className={styles.qText}>{q.question_text}</div>
-
-              <div className={styles.options}>
-                {(q.options || []).map((opt, i) => {
-                  const active = answers[q.id] === i;
-                  return (
-                    <button
-                      key={i}
-                      type="button"
-                      className={`${styles.option} ${active ? styles.optionActive : ""}`}
-                      onClick={() => setAnswer(q.id, i)}
-                    >
-                      <span className={styles.dot} />
-                      <span className={styles.optText}>{opt}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-
-          <button
-            className={styles.primaryBtn}
-            type="button"
-            onClick={submitExam}
-            disabled={!canSubmit || loading}
-          >
-            {loading
-              ? "Отправка..."
-              : canSubmit
-                ? "Отправить результаты"
-                : "Ответьте на все вопросы"}
-          </button>
-        </div>
-      )}
-
-      {stage === "result" && result && (
-        <div className={`${styles.card} border-gradient`}>
-          <div className={styles.resultTop}>
-            <div className={styles.scoreBox}>
-              <div className={styles.scoreLabel}>Результат</div>
-              <div className={styles.scoreValue}>
-                {Math.round(result.score * 100)}%
-              </div>
-            </div>
-
-            <div className={styles.scoreMeta}>
-              <div>
-                Правильных: <b>{result.correct_count}</b> /{" "}
-                {result.total_questions}
-              </div>
-              <div className={styles.muted}>
-                Точность: {Math.round(result.score * 100)}%
-              </div>
-            </div>
-          </div>
-
-          {!!result?.weak_topics?.length && (
-            <div className={styles.weak}>
-              <div className={styles.label}>Зоны внимания</div>
-              <div className={styles.weakList}>
-                {result.weak_topics.slice(0, 3).map((t) => (
-                  <div key={t.topic_id} className={styles.weakItem}>
-                    <span>{t.topic_title}</span>
-                    <span className={styles.muted}>
-                      {Math.round(t.mastery_level)}%
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className={styles.actions}>
-            <button
-              className={styles.primaryBtn}
-              type="button"
-              onClick={() => setStage("start")}
+            <div
+              className={`${styles.mastery} ${masteryColorClass(t.mastery_level, styles)}`}
             >
-              Пройти ещё раз
-            </button>
-            <button
-              className={styles.secondaryBtn}
-              type="button"
-              onClick={() => router.push("/tasks")}
-            >
-              К предметам
-            </button>
+              <span>{Math.round(Number(t.mastery_level || 0))}</span>
+            </div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
     </div>
   );
 }
