@@ -113,6 +113,38 @@ body {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
+.border-gradient-circle {
+  position: relative;
+  border-radius: 50%;
+}
+
+.border-gradient-circle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px; /* толщина бордера */
+  border-radius: 50%;
+  background: var(--g-border-violet);
+  pointer-events: none;
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.border-gradient-circle > * {
+  position: relative;
+  z-index: 1;
+}
+
+.iconGradient {
+  background: var(--g-violet);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .btn {
   background: var(--g-violet-btn);
   color: var(--c-text);

@@ -27,10 +27,10 @@ export default function LoginPage() {
             <div className={styles.inputs}>
               <div className={styles.inputWrapper}>
                 <Icon name="user" size={30} className={styles.inputIcon} />
-                <input className={styles.input} placeholder="Введите почту" />
+                <input className={styles.input} placeholder="Введите Почту" />
               </div>
               <div className={styles.inputWrapper}>
-                <Icon name="lock" size={30} className={styles.inputIcon} />
+                <Icon name="user" size={30} className={styles.inputIcon} />
                 <input className={styles.input} placeholder="Введите пароль" />
               </div>
             </div>

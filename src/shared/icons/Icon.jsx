@@ -1,10 +1,22 @@
-import { SearchIcon, CheckIcon, UserIcon, LockIcon } from "./index";
+import {
+  SearchIcon,
+  CheckIcon,
+  UserIcon,
+  LockIcon,
+  GraduationCap,
+  TeacherIcon,
+  InstIcon,
+} from "./index";
 
 const icons = {
   search: SearchIcon,
   check: CheckIcon,
   user: UserIcon,
   lock: LockIcon,
+  cap: GraduationCap,
+  teacher: TeacherIcon,
+  lock: LockIcon,
+  inst: InstIcon,
 };
 
 export default function Icon({ name, size = 20, ...props }) {

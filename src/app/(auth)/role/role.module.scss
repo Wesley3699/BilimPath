@@ -1,0 +1,98 @@
+.inner {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.bilimPath {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logoTxt {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+
+.description {
+  color: var(--c-text-muted);
+}
+
+.card {
+  width: 100%;
+  max-width: 720px;
+  padding: 48px 40px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.title {
+  margin: 0;
+  text-align: center;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.roles {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.roleItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+
+  padding: 24px 26px;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.03);
+  border: none;
+  color: var(--c-text);
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.roleItem:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow-pink);
+}
+
+.roleIconInner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  color: #9f7cff;
+}
+.roleText {
+  text-align: start;
+}
+.roleText h2 {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+
+.roleText p {
+  color: var(--c-text-muted);
+}
