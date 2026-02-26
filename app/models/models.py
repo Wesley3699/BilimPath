@@ -212,3 +212,60 @@ class ErrorHistory(Base):
     
     student = relationship("User", back_populates="error_history")
     topic   = relationship("Topic", back_populates="errors")
+
+
+
+class Course(Base):
+    __tablename__ = "courses"
+    id             = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    title          = Column(String(255), nullable=False)
+    description    = Column(Text, nullable=True)
+    institution_id = Column(UUID(as_uuid=True), ForeignKey("institutions.id"), nullable=True)
+    created_by     = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    is_active      = Column(Boolean, default=True)
+    created_at     = Column(DateTime, server_default=func.now())
+
+    lessons     = relationship("Lesson", back_populates="course")
+    enrollments = relationship("CourseEnrollment", back_populates="course")
+
+
+class Lesson(Base):
+    __tablename__ = "lessons"
+    id               = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    course_id        = Column(UUID(as_uuid=True), ForeignKey("courses.id"), nullable=False)
+    topic_id         = Column(UUID(as_uuid=True), ForeignKey("topics.id"), nullable=True)
+    title            = Column(String(255), nullable=False)
+    description      = Column(Text, nullable=True)
+    content          = Column(Text, nullable=True)
+    video_url        = Column(Text, nullable=True)
+    duration_minutes = Column(Integer, default=0)
+    order_num        = Column(Integer, default=0)
+    is_published     = Column(Boolean, default=False)
+    created_at       = Column(DateTime, server_default=func.now())
+
+    course    = relationship("Course", back_populates="lessons")
+    topic     = relationship("Topic")
+    progress  = relationship("LessonProgress", back_populates="lesson")
+
+
+class LessonProgress(Base):
+    __tablename__ = "lesson_progress"
+    id               = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    lesson_id        = Column(UUID(as_uuid=True), ForeignKey("lessons.id"), nullable=False)
+    student_id       = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    status           = Column(String(50), default="not_started")
+    progress_percent = Column(Float, default=0.0)
+    started_at       = Column(DateTime, nullable=True)
+    completed_at     = Column(DateTime, nullable=True)
+    last_accessed_at = Column(DateTime, nullable=True)
+
+    lesson  = relationship("Lesson", back_populates="progress")
+
+
+class CourseEnrollment(Base):
+    __tablename__ = "course_enrollments"
+    course_id  = Column(UUID(as_uuid=True), ForeignKey("courses.id"), primary_key=True)
+    student_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), primary_key=True)
+    enrolled_at = Column(DateTime, server_default=func.now())
+
+    course = relationship("Course", back_populates="enrollments")
