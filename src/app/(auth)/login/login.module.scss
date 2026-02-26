@@ -61,19 +61,32 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+
+  .inputWrapper {
+    position: relative;
+    width: 100%;
+  }
+  .inputIcon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--c-text-muted);
+    pointer-events: none;
+  }
+
   .input {
     height: 56px;
-    padding: 0 20px;
+    width: 100%;
+    padding: 0 20px 0 58px;
     border-radius: 14px;
 
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: none;
 
     color: var(--c-text);
     font-size: var(--fs-body);
-
     outline: none;
-    transition: 0.2s ease;
   }
 
   .input::placeholder {

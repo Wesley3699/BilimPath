@@ -25,12 +25,10 @@ export default function LoginPage() {
           <h1 className={styles.title}>Логин</h1>
           <div className={styles.form}>
             <div className={styles.inputs}>
-              <label>
+              <div className={styles.inputWrapper}>
+                <Icon name="user" size={30} className={styles.inputIcon} />
                 <input className={styles.input} placeholder="Ваша почта" />
-                <div className={styles.Icon}>
-                  <Icon name="user" size={24} />
-                </div>
-              </label>
+              </div>
               <input className={styles.input} placeholder="Пароль" />
             </div>
             <div className={styles.buttons}>
