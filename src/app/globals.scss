@@ -1,0 +1,134 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* base text */
+  --c-text: #ffffff;
+  --c-text-second: #beb3d5;
+
+  /* backgrounds */
+  --bg-0: #261b3f; /* 0% */
+  --bg-100: #1a122d; /* 100% */
+  --bg-radial: radial-gradient(
+    circle at top,
+    var(--bg-0) 0%,
+    var(--bg-100) 100%
+  );
+
+  /* gradients */
+  --g-green: linear-gradient(90deg, #00ff26 0%, #009917 100%);
+  --g-orange: linear-gradient(90deg, #ff8b17 0%, #990003 100%);
+  --g-red: linear-gradient(90deg, #ff0004 0%, #990003 100%);
+  --g-violet: linear-gradient(90deg, #bd9dff 0%, #7028ff 100%);
+  --g-violet-btn: linear-gradient(90deg, #3249fc 0%, #9074fe 100%);
+
+  /* border gradient */
+  --g-border-violet: linear-gradient(75deg, #eadfff 0%, #b692ff 100%);
+
+  /* glows */
+  --glow-pink: 0 0 10px rgba(182, 23, 255, 0.25);
+  --glow-green: 0 0 10px rgba(50, 255, 23, 0.25);
+  --glow-red: 0 0 10px rgba(255, 23, 27, 0.25);
+  --glow-orange: 0 0 10px rgba(255, 139, 23, 0.25);
+
+  /* typography */
+  --fs-body: 16px;
+  --fs-lg: 20px;
+  --fs-h3: 26px;
+  --fs-hero: 38px;
+
+  /* layout */
+  --sidebar-width: 300px;
+  --grid-margin: 64px;
+  --grid-gutter: 24px;
+}
+
+@media (max-width: 1200px) {
+  :root {
+    --grid-margin: 40px;
+    --grid-gutter: 20px;
+    --sidebar-width: 280px;
+  }
+}
+
+@media (max-width: 992px) {
+  :root {
+    --grid-margin: 24px;
+    --grid-gutter: 16px;
+    --sidebar-width: 260px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --grid-margin: 16px;
+    --grid-gutter: 14px;
+    --sidebar-width: 0px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --grid-margin: 12px;
+    --grid-gutter: 12px;
+  }
+}
+
+html,
+body {
+  font-family: var(--font-montserrat);
+  color: var(--c-text);
+}
+
+body {
+  margin: 0;
+  background: var(--bg-radial);
+}
+.border-gradient {
+  position: relative;
+  border-radius: 20px;
+  box-shadow: var(--glow-pink);
+}
+.border-gradient > * {
+  position: relative;
+  z-index: 1;
+}
+.border-gradient::before {
+  pointer-events: none;
+  z-index: 0;
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: inherit;
+  background: var(--g-border-violet);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.btn {
+  background: var(--g-violet-btn);
+  color: var(--c-text);
+  font-size: var(--fs-lg);
+  border-radius: 12px;
+  border: none;
+  outline: none;
+  padding: 15px;
+}
+.btn-primary {
+  background: none;
+  color: var(--c-text);
+  font-size: var(--fs-lg);
+  border-radius: 12px;
+  border: 1px solid var(--g-border-violet);
+  border: none;
+  outline: none;
+  padding: 20px;
+}

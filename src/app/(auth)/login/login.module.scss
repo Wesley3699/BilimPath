@@ -1,0 +1,90 @@
+.inner {
+  max-width: 560px;
+  width: 100%;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+  padding: 48px 40px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  color: var(--c-text);
+  box-shadow: var(--glow-pink);
+}
+.bilimPath {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+
+  .logo {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: var(--fs-h3);
+  }
+  .description {
+    text-align: center;
+  }
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  font-size: var(--fs-h3);
+}
+
+.subtitle {
+  margin: 0 0 24px;
+  color: var(--c-text-muted);
+  font-size: var(--fs-body);
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  .input {
+    height: 56px;
+    padding: 0 20px;
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    color: var(--c-text);
+    font-size: var(--fs-body);
+
+    outline: none;
+    transition: 0.2s ease;
+  }
+
+  .input::placeholder {
+    color: var(--c-text-second);
+  }
+
+  .input:focus {
+    border-color: #9074fe;
+    box-shadow: var(--glow-pink);
+  }
+}
+.forgotPass {
+  cursor: pointer;
+}
