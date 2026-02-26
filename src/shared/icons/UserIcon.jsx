@@ -6,7 +6,6 @@ export default function UserIcon(props) {
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke="currentColor"
-      class="size-6"
       {...props}
     >
       <path
